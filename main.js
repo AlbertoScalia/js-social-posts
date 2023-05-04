@@ -56,10 +56,15 @@ const posts = [
     }
 ];
 
+//Array vuoto dove vengono messi i post a cui è stato dato il like
+likedPosts = [];
+
 const postElements = document.querySelector('.posts-list');
 
 //Ciclo for per generare le card
-for (let i = 0; i < posts.length; i++) {
+for (let i = 1; i < posts.length; i++) {
+    const dateReverse = reverseDate(posts[i].created);
+    const nullImage = getInitials(posts[i].author.name);
     postElements.innerHTML += `<div class="post">
 <div class="post__header">
     <div class="post-meta">                    
@@ -90,4 +95,40 @@ for (let i = 0; i < posts.length; i++) {
     </div> 
 </div>            
 </div>`
+}
+
+
+const eleLikeButtons = document.querySelectorAll(".like-button");
+const eleCounters = document.querySelectorAll(".js-likes-counter")
+
+for (let i = 0; i < eleLikeButtons.length; i++) {
+    const eleLike = eleLikeButtons[i];
+
+    eleLike.addEventListener("click", function () {
+        const eleCounter = eleCounters[i];
+        if (eleLike.classList.contains('like-button--liked')) {
+            posts[i].likes -= 1
+            likedPosts.pop(`${posts[i].id}`);
+            console.log(likedPosts);
+        }
+        else {
+            posts[i].likes += 1
+            likedPosts.push(`${posts[i].id}`);
+            console.log(likedPosts);
+        }
+        eleLike.classList.toggle('like-button--liked');
+        eleCounter.innerHTML = `${posts[i].likes}`
+
+    });
+}
+
+// Funzione per formattare la data
+function reverseDate(date) {
+    const partDate = date.split('-');
+    return `${partDate[2]}-${partDate[1]}-${partDate[0]}`;
+}
+
+// Funzione per l'immagine di profilo null
+function getInitials(name) {
+    return name.split(' ').map(word => word.charAt(0)).join('').toUpperCase();
 }
